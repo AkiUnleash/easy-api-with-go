@@ -10,6 +10,8 @@ WORKDIR /go/src/app
 ADD . /go/src/app
 
 RUN go get -u github.com/oxequa/realize \
-  && go get github.com/go-sql-driver/mysql
+  && go get github.com/go-sql-driver/mysql \
+  && go get github.com/labstack/echo \
+  && go get github.com/jinzhu/gorm
 
 CMD ["realize", "start"]

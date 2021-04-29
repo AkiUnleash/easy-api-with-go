@@ -1,88 +1,119 @@
 package main
 
 import (
-	"database/sql"
-	"html/template"
-	"log"
 	"net/http"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
+	"github.com/labstack/echo"
 )
 
-// Embed htmlファイルに埋め込むデータ構造体
-type Embed struct {
-	Title   string
-	Message string
-	Users   map[int]User
-	Time    time.Time
+// Users ユーザー情報のテーブル情報
+type Users struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
-
-// User db users
-type User struct {
-	ID       int
-	Name     string
-	Password string
-}
-
-const (
-	// DriverName ドライバ名(mysql固定)
-	DriverName = "mysql"
-	// DataSourceName user:password@tcp(container-name:port)/dbname
-	DataSourceName = "root:golang@tcp(mysql-container:3306)/golang_db"
-)
-
-var usr = make(map[int]User)
-var templates = make(map[string]*template.Template)
 
 func main() {
-	// database
-	db, dbErr := sql.Open(DriverName, DataSourceName)
-	if dbErr != nil {
-		log.Print("error connecting to database:", dbErr)
+
+	db, err := sqlConnect()
+	if err != nil {
+		panic(err.Error())
 	}
 	defer db.Close()
-	rows, queryErr := db.Query("SELECT * FROM users")
-	if queryErr != nil {
-		log.Print("query error :", queryErr)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var u User
-		if err := rows.Scan(&u.ID, &u.Name, &u.Password); err != nil {
-			log.Print(err)
-		}
-		usr[u.ID] = User{
-			ID:       u.ID,
-			Name:     u.Name,
-			Password: u.Password,
-		}
-	}
-	// web_server
-	port := "8081"
-	templates["index"] = loadTemplate("index")
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 
-	http.HandleFunc("/", handleIndex)
-	log.Printf("Server listening on http://localhost:%s/", port)
-	log.Print(http.ListenAndServe(":"+port, nil))
+	e := echo.New()
+
+	e.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, user_data_all(db))
+	})
+
+	e.GET("/show", func(c echo.Context) error {
+		name := c.QueryParam("name")
+		return c.JSON(http.StatusOK, user_data_name(db, name))
+	})
+
+	e.POST("/create", func(c echo.Context) error {
+		u := &Users{}
+		if err := c.Bind(&u); err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, user_data_create(db, u))
+	})
+
+	e.PUT("/update", func(c echo.Context) error {
+		u := &Users{}
+		if err := c.Bind(&u); err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, user_data_update(db, u))
+	})
+
+	e.DELETE("/delete", func(c echo.Context) error {
+		u := &Users{}
+		if err := c.Bind(&u); err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, user_data_delete(db, u))
+	})
+
+	e.Logger.Fatal(e.Start(":8081"))
+
 }
 
-func handleIndex(w http.ResponseWriter, r *http.Request) {
-	temp := Embed{"Hello Golang!", "こんにちは！", usr, time.Now()}
-	if err := templates["index"].Execute(w, temp); err != nil {
-		log.Printf("failed to execute template: %v", err)
+func user_data_name(db *gorm.DB, name string) []Users {
+	result := []Users{}
+	db.Where("name = ?", name).Find(&result)
+	return result
+}
+
+func user_data_all(db *gorm.DB) []Users {
+	result := []Users{}
+	db.Find(&result)
+	return result
+}
+
+// データ挿入
+func user_data_create(db *gorm.DB, u *Users) string {
+	error := db.Create(&u).Error
+	if error != nil {
+		return "NG"
+	} else {
+		return "OK"
 	}
 }
 
-func loadTemplate(name string) *template.Template {
-	t, err := template.ParseFiles(
-		"root/"+name+".html",
-		"root/template/header.html",
-		"root/template/footer.html",
-	)
-	if err != nil {
-		log.Fatalf("template error: %v", err)
+// アップデート
+func user_data_update(db *gorm.DB, u *Users) string {
+	error := db.Model(Users{}).Where("id = ?", u.ID).Update(&u).Error
+
+	if error != nil {
+		return "NG"
+	} else {
+		return "OK"
 	}
-	return t
+}
+
+// アップデート
+func user_data_delete(db *gorm.DB, u *Users) string {
+	error := db.Model(Users{}).Where("id = ?", u.ID).Delete(&u).Error
+
+	if error != nil {
+		return "NG"
+	} else {
+		return "OK"
+	}
+}
+
+// SQLConnect DB接続
+func sqlConnect() (database *gorm.DB, err error) {
+	DBMS := "mysql"
+	USER := "root"
+	PASS := "golang"
+	PROTOCOL := "tcp(mysql-container:3306)"
+	DBNAME := "golang_db"
+
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
+	return gorm.Open(DBMS, CONNECT)
 }

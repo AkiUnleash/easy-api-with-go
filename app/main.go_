@@ -1,0 +1,13 @@
+package main
+
+// func main() {
+// 	echo := echo.New()
+
+// 	echo.Use(middleware.Logger())
+// 	echo.Use(middleware.Recover())
+
+// 	// Routing
+// 	echo.GET("/user/", model.selectUser())
+
+// 	echo.Start(":8081")
+// }
