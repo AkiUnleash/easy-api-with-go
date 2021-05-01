@@ -29,7 +29,7 @@ func main() {
 		return c.JSON(http.StatusOK, user_data_all(db))
 	})
 
-	e.GET("/show", func(c echo.Context) error {
+	e.GET("/shows", func(c echo.Context) error {
 		name := c.QueryParam("name")
 		return c.JSON(http.StatusOK, user_data_name(db, name))
 	})

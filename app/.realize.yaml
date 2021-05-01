@@ -4,8 +4,14 @@ settings:
     interval: 0s
 schema:
 - name: app
-  path: .
-  commands: {}
+  path: . 
+  commands:
+    install:
+      status: true
+      method: go build -o ./main ./
+    run:
+      status: true
+      method: ./main
   watcher:
     extensions:
     - go
@@ -14,4 +20,3 @@ schema:
     ignored_paths:
     - .git
     - .realize
-    - vendor
