@@ -1,4 +1,4 @@
-package database
+package hogehoge
 
 import (
 	_ "github.com/go-sql-driver/mysql"
