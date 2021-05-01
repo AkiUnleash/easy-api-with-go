@@ -23,45 +23,69 @@ func main() {
 	}
 	defer db.Close()
 
+	routing(db)
+
+}
+
+// Server
+// ------- Routing
+func routing(db *gorm.DB) {
 	e := echo.New()
 
-	e.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, user_data_all(db))
-	})
+	e.GET("/user", handler_user(db))
+	e.GET("/shows", handler_show(db))
+	e.POST("/create", handler_create(db))
+	e.PUT("/update", handler_update(db))
+	e.DELETE("/delete", handler_delete(db))
 
-	e.GET("/shows", func(c echo.Context) error {
+	e.Logger.Fatal(e.Start(":8081"))
+}
+
+// ------- Controllers
+func handler_user(db *gorm.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.JSON(http.StatusOK, user_data_all(db))
+	}
+}
+
+func handler_show(db *gorm.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
 		name := c.QueryParam("name")
 		return c.JSON(http.StatusOK, user_data_name(db, name))
-	})
+	}
+}
 
-	e.POST("/create", func(c echo.Context) error {
+func handler_create(db *gorm.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
 		u := &Users{}
 		if err := c.Bind(&u); err != nil {
 			return err
 		}
 		return c.JSON(http.StatusOK, user_data_create(db, u))
-	})
+	}
+}
 
-	e.PUT("/update", func(c echo.Context) error {
+func handler_update(db *gorm.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
 		u := &Users{}
 		if err := c.Bind(&u); err != nil {
 			return err
 		}
 		return c.JSON(http.StatusOK, user_data_update(db, u))
-	})
+	}
+}
 
-	e.DELETE("/delete", func(c echo.Context) error {
+func handler_delete(db *gorm.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
 		u := &Users{}
 		if err := c.Bind(&u); err != nil {
 			return err
 		}
 		return c.JSON(http.StatusOK, user_data_delete(db, u))
-	})
-
-	e.Logger.Fatal(e.Start(":8081"))
-
+	}
 }
 
+// ------- Models
 func user_data_name(db *gorm.DB, name string) []Users {
 	result := []Users{}
 	db.Where("name = ?", name).Find(&result)
@@ -74,7 +98,6 @@ func user_data_all(db *gorm.DB) []Users {
 	return result
 }
 
-// データ挿入
 func user_data_create(db *gorm.DB, u *Users) string {
 	error := db.Create(&u).Error
 	if error != nil {
@@ -84,7 +107,6 @@ func user_data_create(db *gorm.DB, u *Users) string {
 	}
 }
 
-// アップデート
 func user_data_update(db *gorm.DB, u *Users) string {
 	error := db.Model(Users{}).Where("id = ?", u.ID).Update(&u).Error
 
@@ -95,7 +117,6 @@ func user_data_update(db *gorm.DB, u *Users) string {
 	}
 }
 
-// アップデート
 func user_data_delete(db *gorm.DB, u *Users) string {
 	error := db.Model(Users{}).Where("id = ?", u.ID).Delete(&u).Error
 
@@ -106,6 +127,7 @@ func user_data_delete(db *gorm.DB, u *Users) string {
 	}
 }
 
+// ------- Configs
 // SQLConnect DB接続
 func sqlConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
