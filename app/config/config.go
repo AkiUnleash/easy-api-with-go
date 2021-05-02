@@ -1,25 +1,32 @@
 package config
 
 import (
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
 	"gopkg.in/ini.v1"
 )
 
+type ConfigList struct {
+	Dbms     string
+	User     string
+	Pass     string
+	Protocol string
+	Dbname   string
+}
+
+var Config ConfigList
+
 // SQLConnect DB接続
-func SqlConnect() (database *gorm.DB, err error) {
+func init() {
 
 	cfg, err := ini.Load("config.ini")
 	if err != nil {
 		panic(err.Error())
 	}
 
-	DBMS := cfg.Section("db").Key("host").String()
-	USER := cfg.Section("db").Key("user_name").String()
-	PASS := cfg.Section("db").Key("password").String()
-	PROTOCOL := cfg.Section("db").Key("protocol").String()
-	DBNAME := cfg.Section("db").Key("db_name").String()
-
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
-	return gorm.Open(DBMS, CONNECT)
+	Config = ConfigList{
+		Dbms:     cfg.Section("db").Key("host").String(),
+		User:     cfg.Section("db").Key("user_name").String(),
+		Pass:     cfg.Section("db").Key("password").String(),
+		Protocol: cfg.Section("db").Key("protocol").String(),
+		Dbname:   cfg.Section("db").Key("db_name").String(),
+	}
 }

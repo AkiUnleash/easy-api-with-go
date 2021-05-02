@@ -1,7 +1,7 @@
 package main
 
 import (
-	"crudapi/config"
+	"crudapi/server"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -18,7 +18,7 @@ type Users struct {
 
 func main() {
 
-	db, err := config.SqlConnect()
+	db, err := server.SqlConnect()
 	if err != nil {
 		panic(err.Error())
 	}
