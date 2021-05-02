@@ -6,7 +6,7 @@ schema:
 - name: app
   path: . 
   commands:
-    install:
+    build:
       status: true
       method: go build -o ./main ./
     run:
