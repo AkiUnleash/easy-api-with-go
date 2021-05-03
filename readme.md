@@ -28,6 +28,8 @@ I'm using the following pakages.
 - github.com/jinzhu/gorm v1.9.16
 - github.com/labstack/echo v3.3.10
 - gopkg.in/ini.v1 v1.62.0
+- go get -u github.com/swaggo/swag/cmd/swag
+- go get -u github.com/swaggo/echo-swagger
 
 ## Requirement
 
@@ -86,6 +88,12 @@ $ curl -X DELETE -H "Content-Type: application/json" -d '{"id": 1}' localhost:80
 
 "OK"
 ```
+
+### Swagger (API design documentation)
+
+Access the following in your browser.
+
+[http://localhost:8081/swagger/index.html](http://localhost:8081/swagger/index.html)
 
 ## Licence
 
