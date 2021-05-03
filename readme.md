@@ -28,8 +28,8 @@ I'm using the following pakages.
 - github.com/jinzhu/gorm v1.9.16
 - github.com/labstack/echo v3.3.10
 - gopkg.in/ini.v1 v1.62.0
-- go get -u github.com/swaggo/swag/cmd/swag
-- go get -u github.com/swaggo/echo-swagger
+- github.com/swaggo/swag/cmd/swag
+- github.com/swaggo/echo-swagger
 
 ## Requirement
 
