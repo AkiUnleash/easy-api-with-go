@@ -13,19 +13,19 @@ type Users struct {
 }
 
 // ------- Models
-func User_data_name(db *gorm.DB, name string) []Users {
+func UserDataName(db *gorm.DB, name string) []Users {
 	result := []Users{}
 	db.Where("name = ?", name).Find(&result)
 	return result
 }
 
-func User_data_all(db *gorm.DB) []Users {
+func UserDataAll(db *gorm.DB) []Users {
 	result := []Users{}
 	db.Find(&result)
 	return result
 }
 
-func User_data_create(db *gorm.DB, u *Users) string {
+func UserDataCreate(db *gorm.DB, u *Users) string {
 	error := db.Create(&u).Error
 	if error != nil {
 		return "NG"
@@ -34,7 +34,7 @@ func User_data_create(db *gorm.DB, u *Users) string {
 	}
 }
 
-func User_data_update(db *gorm.DB, u *Users) string {
+func UserDataUpdate(db *gorm.DB, u *Users) string {
 	error := db.Model(Users{}).Where("id = ?", u.ID).Update(&u).Error
 
 	if error != nil {
@@ -44,7 +44,7 @@ func User_data_update(db *gorm.DB, u *Users) string {
 	}
 }
 
-func User_data_delete(db *gorm.DB, u *Users) string {
+func UserDataDelete(db *gorm.DB, u *Users) string {
 	error := db.Model(Users{}).Where("id = ?", u.ID).Delete(&u).Error
 
 	if error != nil {

@@ -15,9 +15,9 @@ import (
 // @Produce  json
 // @Success 200 {object} models.Users
 // @Router /users [get]
-func Handler_user(db *gorm.DB) echo.HandlerFunc {
+func HandlerUser(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, models.User_data_all(db))
+		return c.JSON(http.StatusOK, models.UserDataAll(db))
 	}
 }
 
@@ -30,10 +30,10 @@ func Handler_user(db *gorm.DB) echo.HandlerFunc {
 // @Produce  json
 // @Success 200 {object} models.Users
 // @Router /user/{name} [get]
-func Handler_show(db *gorm.DB) echo.HandlerFunc {
+func HandlerShow(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.QueryParam("name")
-		return c.JSON(http.StatusOK, models.User_data_name(db, name))
+		return c.JSON(http.StatusOK, models.UserDataName(db, name))
 	}
 }
 
@@ -44,13 +44,13 @@ func Handler_show(db *gorm.DB) echo.HandlerFunc {
 // @Produce  json
 // @Success 200
 // @Router /create [post]
-func Handler_create(db *gorm.DB) echo.HandlerFunc {
+func HandlerCreate(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		u := &models.Users{}
 		if err := c.Bind(&u); err != nil {
 			return err
 		}
-		return c.JSON(http.StatusOK, models.User_data_create(db, u))
+		return c.JSON(http.StatusOK, models.UserDataCreate(db, u))
 	}
 }
 
@@ -61,13 +61,13 @@ func Handler_create(db *gorm.DB) echo.HandlerFunc {
 // @Produce  json
 // @Success 200
 // @Router /update [put]
-func Handler_update(db *gorm.DB) echo.HandlerFunc {
+func HandlerUpdate(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		u := &models.Users{}
 		if err := c.Bind(&u); err != nil {
 			return err
 		}
-		return c.JSON(http.StatusOK, models.User_data_update(db, u))
+		return c.JSON(http.StatusOK, models.UserDataUpdate(db, u))
 	}
 }
 
@@ -78,12 +78,12 @@ func Handler_update(db *gorm.DB) echo.HandlerFunc {
 // @Produce  json
 // @Success 204
 // @Router /delete [delete]
-func Handler_delete(db *gorm.DB) echo.HandlerFunc {
+func HandlerDelete(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		u := &models.Users{}
 		if err := c.Bind(&u); err != nil {
 			return err
 		}
-		return c.JSON(http.StatusOK, models.User_data_delete(db, u))
+		return c.JSON(http.StatusOK, models.UserDataDelete(db, u))
 	}
 }

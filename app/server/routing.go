@@ -13,11 +13,11 @@ import (
 func Routing(db *gorm.DB) {
 	e := echo.New()
 
-	e.GET("/users", controllers.Handler_user(db))
-	e.GET("/user", controllers.Handler_show(db))
-	e.POST("/create", controllers.Handler_create(db))
-	e.PUT("/update", controllers.Handler_update(db))
-	e.DELETE("/delete", controllers.Handler_delete(db))
+	e.GET("/users", controllers.HandlerUser(db))
+	e.GET("/user", controllers.HandlerShow(db))
+	e.POST("/create", controllers.HandlerCreate(db))
+	e.PUT("/update", controllers.HandlerUpdate(db))
+	e.DELETE("/delete", controllers.HandlerDelete(db))
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
