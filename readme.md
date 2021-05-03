@@ -93,4 +93,4 @@ $ curl -X DELETE -H "Content-Type: application/json" -d '{"id": 1}' localhost:80
 
 ## Author
 
-[Aki Unleash - Akio Yano] (https://github.com/AkiUnleash)
+[Aki Unleash - Akio Yano](https://github.com/AkiUnleash)

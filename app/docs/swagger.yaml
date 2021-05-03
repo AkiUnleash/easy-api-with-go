@@ -1,0 +1,88 @@
+basePath: /
+definitions:
+  models.Users:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: http://localhost:8081
+info:
+  contact: {}
+  description: This is program I developed as a lerning process before creating an
+    API in Golang.
+  license:
+    name: MIT
+    url: https://github.com/tcnksm/tool/blob/master/LICENCE
+  title: Easy API with Go
+  version: 1.0.0
+paths:
+  /create:
+    post:
+      consumes:
+      - application/json
+      description: Display the specified person.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Show a personal user
+  /delete:
+    delete:
+      consumes:
+      - application/json
+      description: Display the specified person.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Show a personal user
+  /update:
+    put:
+      consumes:
+      - application/json
+      description: Display the specified person.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Show a personal user
+  /user/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Display the specified person.
+      parameters:
+      - description: Name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Users'
+      summary: Show a personal user
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Display of all user data.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Users'
+      summary: Show a users
+swagger: "2.0"
